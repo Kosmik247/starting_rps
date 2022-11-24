@@ -24,39 +24,47 @@ class Game:
 
         # Format here is to give the play and the plays that it will defeat
 
-        self.options_and_how_to_win = {
+        self.plays_and_rules = {
             'rock': ['scissors'],
             'paper': ['rock'],
-            'scissors': ['paper']
+            'scissors': ['paper'],
+            'gun': ['scissors', 'paper', 'rock'],
+            'andrew': []
         }
 
-        self.winner = False
+        self.has_winner = False
         self.winning_player = None
         self.timer_on = False
         self.timer_completed = False
+
+    def start_timer(self):
+        self.timer_on = True
+
+    def stop_timer(self):
+        self.timer_on = False
 
     def decide_winner(self):
 
         if self.player1.choice and self.player2.choice:
 
-            if self.player2.choice in self.options_and_how_to_win[self.player1.choice]:
-                self.winner = True
+            if self.player2.choice in self.plays_and_rules[self.player1.choice]:
+                self.has_winner = True
                 self.winning_player = self.player1
                 self.player1.increment_score()
 
-            elif self.player1.choice in self.options_and_how_to_win[self.player2.choice]:
-                self.winner = True
+            elif self.player1.choice in self.plays_and_rules[self.player2.choice]:
+                self.has_winner = True
                 self.winning_player = self.player2
                 self.player2.increment_score()
 
             else:
-                self.winner = None
+                self.has_winner = False
 
         else:
             raise Exception('No choices to compare!')
 
-    def start_timer(self):
-        self.timer_on = True
+    def get_result(self):
+        return self.has_winner, self.winning_player
 
 
 class ShellApp:
@@ -72,7 +80,7 @@ class ShellApp:
 
             my_game.decide_winner()
 
-            if my_game.winner:
+            if my_game.has_winner:
                 print(f'The winner was {my_game.winning_player}')
                 break
             else:

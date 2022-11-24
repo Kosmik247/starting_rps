@@ -31,16 +31,21 @@ class PlayerChoiceFrame(tk.Frame):
         self.game = game
 
         self.choice = tk.StringVar()
-        self.choice.set(r.choice(list(self.game.options_and_how_to_win)))
+        self.choice.set(r.choice(list(self.game.plays_and_rules)))
+
+        self.player.set_choice(self.choice.get())
 
         self.name_label = tk.Label(self, text=str(self.player))
         self.name_label.grid(sticky='new')
 
         self.radio_buttons = []
-        for choice in self.game.options_and_how_to_win:
-            next_choice = tk.Radiobutton(self, text=choice, variable=self.choice, value=choice)
+        for choice in self.game.plays_and_rules:
+            next_choice = tk.Radiobutton(self, text=choice, variable=self.choice, value=choice, command=self.new_choice)
             next_choice.grid(sticky='w')
             self.radio_buttons.append(next_choice)
+
+    def new_choice(self):
+        self.player.set_choice(self.choice.get())
 
 
 class StatusFrame(tk.Frame):
@@ -61,20 +66,36 @@ class StatusFrame(tk.Frame):
         self.timer_Label.grid()
 
     def play_button_pressed(self):
-        if not self.game.timer_on:
-            self.game_status.configure(text='Game on')
-            self.timer_start()
+        if self.game.timer_on:
+            self.timer_stop()
+            self.game.decide_winner()
+
+            has_winner, winning_player = self.game.get_result()
+
+            if has_winner:
+                self.game_status.configure(text=f'{winning_player} won!')
+            else:
+                self.game_status.configure(text=f'Boring - a draw!')
+
+            self.play_button.configure(text='Press Play')
         else:
-            pass
+            self.timer_start()
+            self.game_status.configure(text='Game on')
+            self.play_button.configure(text='Stop')
 
     def timer_start(self):
         self.game.start_timer()
         self.timer_display.set('1:00')
 
+    def timer_stop(self):
+        self.game.stop_timer()
+        self.timer_display.set('0:00')
 
-anna = rps.Player('Anna')
-bob = rps.Player('Bob')
 
-my_app = AppRPS(rps.Game(anna, bob))
+if __name__ == "__main__":
+    anna = rps.Player('Anna')
+    bob = rps.Player('Bob')
 
-tk.mainloop()
+    my_app = AppRPS(rps.Game(anna, bob))
+
+    tk.mainloop()
