@@ -28,8 +28,6 @@ class Game:
             'rock': ['scissors'],
             'paper': ['rock'],
             'scissors': ['paper'],
-            'gun': ['scissors', 'paper', 'rock'],
-            'andrew': []
         }
 
         self.has_winner = False
