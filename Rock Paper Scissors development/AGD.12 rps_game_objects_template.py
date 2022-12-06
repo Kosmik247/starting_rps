@@ -61,7 +61,9 @@ class PlayerObject:
             name: str
                 name of object - must be in allowable objects
         """
-        ...
+        if name in self.allowable_objects:
+            self.name = name
+
 
     @classmethod
     def random_object(cls):
@@ -69,7 +71,7 @@ class PlayerObject:
         Returns a random object from amongst the allowable objects
         """
         # The allowable objects are in cls.allowable_objects
-        ...
+        return random.choice(cls.allowable_objects)
 
     @classmethod
     def set_object_rules(cls, allowable_objects=None, win_dict=None):
@@ -83,13 +85,15 @@ class PlayerObject:
         """
         Returns True if the name attribute of self and other are the same
         """
-        ...
+        if self.name == other:
+            return True
 
     def __gt__(self, other):
         """
         Checks if the current object (self) beats the passed object (other), by checking win_dict
         """
-        ...
+        if other == self.win_dict[self.name]:
+            return True
 
     def __repr__(self):
         """
@@ -116,19 +120,21 @@ class Player:
         """
         Constructs the necessary attributes for the Player class
         """
-        ...
+        self.name = name
+        self.score = 0
+        self.current_object = "None"
 
     def set_name(self, name):
         """ Sets name attribute to name """
-        ...
+        self.name = name
 
     def reset_object(self):
         """ Sets the current_object to None - not selected"""
-        ...
+        self.current_object = "None"
 
     def win_round(self):
         """ Increases score by one """
-        ...
+        self.score += 1
 
     def __repr__(self):
         """ Representation of the object """
@@ -221,3 +227,4 @@ class Game:
     def report_winner(self):
         """ Returns a message with the overall winner """
         ...
+
